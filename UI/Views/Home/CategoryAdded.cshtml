@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Kategori Ekle";
+}
+<h1>@ViewData["Title"]</h1>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form id="categoryForm">
+                <div class="mb-3">
+                    <label for="Name" class="form-label">Kategori Adı</label>
+                    <input type="text" class="form-control" id="Name" name="Name" placeholder="Kategori adı girin" required>
+                </div>
+                <div class="mb-3">
+                    <label for="Description" class="form-label">Açıklama</label>
+                    <textarea class="form-control" id="Description" name="Description" rows="3" placeholder="Kategori açıklaması girin" required></textarea>
+                </div>
+                <div class="d-grid">
+                    <button type="button" id="addCategoryBtn" class="btn btn-primary">Kategori Ekle</button>
+                </div>
+            </form>
+            <div id="successMessage" class="alert alert-success mt-3 d-none">
+                Kategori başarıyla eklendi!
+            </div>
+            <div id="errorMessage" class="alert alert-danger mt-3 d-none">
+                Kategori eklenirken bir hata oluştu!
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#addCategoryBtn").click(function () {
+        const categoryData = {
+            name: $("#Name").val(),
+            description: $("#Description").val()
+        };
+
+        console.log("Gönderilecek ürün:", categoryData);
+
+        $.ajax({
+            url: "http://localhost:5001/api/Category/add",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(categoryData),
+            success: function (response) {
+                console.log("Kategori başarıyla eklendi:", response);
+                $("#successMessage").removeClass("d-none");
+                $("#errorMessage").addClass("d-none");
+                $("#categoryForm")[0].reset(); 
+            },
+            error: function (err) {
+                console.error("Kategori ekleme hatası:", err);
+                $("#errorMessage").removeClass("d-none");
+                $("#successMessage").addClass("d-none");
+            }
+        });
+    });
+</script>

@@ -1,0 +1,145 @@
+﻿@{
+    ViewData["Title"] = "Category";
+}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Kategori Listesi</h1>
+    <div class="d-flex justify-content-center mb-3">
+        <button id="loadCategories" class="btn btn-primary">Kategorileri Getir</button>
+    </div>
+
+    <table class="table table-striped table-bordered text-center" id="categoryTable">
+        <thead>
+            <tr>
+                <th>Kategori Adı</th>
+                <th>Kategori Açıklaması</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Kategori satırları buraya eklenecek -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Kategori Güncelleme Modal'ı -->
+<div class="modal fade" id="updateCategoryModal" tabindex="-1" aria-labelledby="updateCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateCategoryModalLabel">Kategori Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateCategoryForm">
+                    <div class="mb-3">
+                        <label for="updateCategoryName" class="form-label">Kategori Adı</label>
+                        <input type="text" class="form-control" id="updateCategoryName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateCategoryDescription" class="form-label">Kategori Açıklaması</label>
+                        <textarea class="form-control" id="updateCategoryDescription" rows="3" required></textarea>
+                    </div>
+                    <input type="hidden" id="updateCategoryId">
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#loadCategories").click(function () {
+        $.ajax({
+            url: "http://localhost:5001/api/Category/getall",
+            method: "GET",
+            dataType: "json",
+            success: function (response) {
+                console.log("API'den gelen yanıt:", response);
+
+                if (Array.isArray(response.data)) {
+                    $("#categoryTable tbody").empty();
+                    response.data.forEach(category => {
+                        const row = `
+                                <tr>
+                                    <td>${category.name}</td>
+                                    <td>${category.description}</td>
+                                    <td>
+                                        <button class="updateCategory btn btn-warning" data-id="${category.id}" data-name="${category.name}" data-description="${category.description}">Güncelle</button>
+                                        <button class="deleteCategory btn btn-danger" data-id="${category.id}">Sil</button>
+                                    </td>
+                                </tr>
+                            `;
+                        $("#categoryTable tbody").append(row);
+                    });
+                } else {
+                    console.error("Beklenen veri formatı bir dizi değil:", response);
+                }
+            },
+            error: function (err) {
+                console.error("Hata oluştu:", err);
+            }
+        });
+    });
+
+    $(document).on("click", ".updateCategory", function () {
+        const categoryId = $(this).data("id");
+        const categoryName = $(this).data("name");
+        const categoryDescription = $(this).data("description");
+
+        // Modal içindeki alanları doldur
+        $("#updateCategoryId").val(categoryId);
+        $("#updateCategoryName").val(categoryName);
+        $("#updateCategoryDescription").val(categoryDescription);
+
+        // Modal'ı göster
+        $("#updateCategoryModal").modal("show");
+    });
+
+    $("#updateCategoryForm").submit(function (e) {
+        e.preventDefault();
+
+        const categoryId = $("#updateCategoryId").val();
+        const updatedCategory = {
+            id: categoryId,
+            name: $("#updateCategoryName").val(),
+            description: $("#updateCategoryDescription").val()
+        };
+
+        $.ajax({
+            url: `http://localhost:5001/api/Category/update`, // API endpoint'i
+            method: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(updatedCategory),
+            success: function () {
+                console.log(`Kategori (ID: ${categoryId}) güncellendi.`);
+                $("#updateCategoryModal").modal("hide");
+                $("#loadCategories").click(); // Kategorileri tekrar yükle
+            },
+            error: function (err) {
+                console.error("Kategori güncelleme hatası:", err);
+            }
+        });
+    });
+
+    $(document).on("click", ".deleteCategory", function () {
+        const categoryId = $(this).data("id");
+        const row = $(this).closest("tr");
+        deleteCategory(categoryId, row);
+    });
+
+    function deleteCategory(categoryId, row) {
+        $.ajax({
+            url: `http://localhost:5001/api/Category/delete/${categoryId}`,
+            method: "DELETE",
+            success: function () {
+                console.log(`Kategori (ID: ${categoryId}) silindi.`);
+                row.remove(); // Başarıyla silindiğinde tablo satırını kaldır
+            },
+            error: function (err) {
+                console.error("Kategori silme hatası:", err);
+            }
+        });
+    }
+
+</script>
