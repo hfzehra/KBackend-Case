@@ -3,7 +3,6 @@ using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntitiyFramework;
 using Entity.Concrete;
-using Entity.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,20 +15,12 @@ namespace Business.Concrete
     public class ProductManager : IProductService
     {
         IProductDal _productDal;
-        ICategoryDal _categoryDal;
-        public ProductManager(IProductDal productDal, ICategoryDal categoryDal)
+        public ProductManager(IProductDal productDal)
         {
             _productDal = productDal;
-            _categoryDal = categoryDal;
         }
         public IResult Add(Product product)
         {
-            // Kategori varlığını kontrol et
-            var categoryExists = _categoryDal.Get(c => c.Id == product.CategoryId);
-            if (categoryExists == null)
-            {
-                return new ErrorResult("Geçerli bir kategori bulunamadı. Ürün eklenemedi.");
-            }
 
             _productDal.Add(product);
             return new SuccessResult("Ürün başarıyla eklendi.");
@@ -41,11 +32,11 @@ namespace Business.Concrete
             var product = _productDal.Get(c => c.Id == id);
             if (product == null)
             {
-                return new ErrorResult("Kategori bulunamadı.");
+                return new ErrorResult("Ürün bulunamadı.");
             }
 
             _productDal.Delete(product);
-            return new SuccessResult("Kategori başarıyla silindi.");
+            return new SuccessResult("Ürün başarıyla silindi.");
         }
 
         public IDataResult<List<Product>> GetAll()
@@ -82,10 +73,6 @@ namespace Business.Concrete
             return new SuccessResult("Ürün başarıyla güncellendi");
         }
 
-        public List<ProductListDTO> GetProductsWithCategory()
-        {
-            return _productDal.GetProductsWithCategory();
-        }
 
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Core.Utilities.Results;
 using Entity.Concrete;
-using Entity.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +16,5 @@ namespace Business.Abstract
         IResult Delete(int id);
         IResult Update(Product product);
 
-        List<ProductListDTO> GetProductsWithCategory();
     }
 }

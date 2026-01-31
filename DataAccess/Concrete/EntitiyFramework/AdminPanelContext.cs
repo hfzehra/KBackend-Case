@@ -12,14 +12,12 @@ namespace DataAccess.Concrete.EntitiyFramework
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder
-            //.UseLazyLoadingProxies()
-            //.UseSqlServer(@"Server =(localdb)\ZEHRA; Database=AdminDatabase; Trusted_Connection=true");
-            .optionsBuilder.UseInMemoryDatabase("ProductManager");
+            optionsBuilder
+            .UseLazyLoadingProxies()
+            .UseSqlServer(@"Server =(localdb)\ZEHRA; Database=KayraBackend1; Trusted_Connection=true");
+            //.optionsBuilder.UseInMemoryDatabase("ProductManager");
         }
 
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<User> Users { get; set; }
     }
 }

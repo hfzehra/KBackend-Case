@@ -76,11 +76,5 @@ namespace WebApi.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getallProduct")]
-        public IActionResult GetProductsWithCategory()
-        {
-            var result = _productService.GetProductsWithCategory();
-            return Ok(new { data = result });
-        }
     }
 }
