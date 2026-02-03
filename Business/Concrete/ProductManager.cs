@@ -1,4 +1,4 @@
-﻿using Business.Abstract;
+﻿﻿using Business.Abstract;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntitiyFramework;
@@ -73,6 +73,55 @@ namespace Business.Concrete
             return new SuccessResult("Ürün başarıyla güncellendi");
         }
 
+        // Async Methods
+        public async Task<IResult> AddAsync(Product product)
+        {
+            await _productDal.AddAsync(product);
+            return new SuccessResult("Ürün başarıyla eklendi.");
+        }
 
+        public async Task<IResult> DeleteAsync(int id)
+        {
+            var product = await _productDal.GetAsync(c => c.Id == id);
+            if (product == null)
+            {
+                return new ErrorResult("Ürün bulunamadı.");
+            }
+
+            await _productDal.DeleteAsync(product);
+            return new SuccessResult("Ürün başarıyla silindi.");
+        }
+
+        public async Task<IDataResult<List<Product>>> GetAllAsync()
+        {
+            var result = await _productDal.GetAllAsync();
+            return new SuccessDataResult<List<Product>>(result, "Tüm ürünler listelendi.");
+        }
+
+        public async Task<IDataResult<Product>> GetByIdProductAsync(int id)
+        {
+            var result = await _productDal.GetAsync(p => p.Id == id);
+            if (result == null)
+            {
+                return new ErrorDataResult<Product>("Belirtilen ID'ye sahip ürün bulunamadı.");
+            }
+            return new SuccessDataResult<Product>(result, "Ürün başarıyla getirildi.");
+        }
+
+        public async Task<IResult> UpdateAsync(Product product)
+        {
+            var existingProduct = await _productDal.GetAsync(p => p.Id == product.Id);
+            if (existingProduct == null)
+            {
+                return new ErrorResult("Ürün bulunamadı");
+            }
+
+            existingProduct.Name = product.Name;
+            existingProduct.Description = product.Description;
+            existingProduct.Price = product.Price;
+
+            await _productDal.UpdateAsync(existingProduct);
+            return new SuccessResult("Ürün başarıyla güncellendi");
+        }
     }
 }

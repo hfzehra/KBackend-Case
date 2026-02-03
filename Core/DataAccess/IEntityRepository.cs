@@ -1,4 +1,4 @@
-﻿using Core.Entities;
+﻿﻿using Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +19,11 @@ namespace Core.DataAccess
         List<T> GetAll(Expression<Func<T, bool>> filter = null);
         T Get(Expression<Func<T, bool>> filter);
 
+        // Async methods
+        Task<T> GetAsync(Expression<Func<T, bool>> filter);
+        Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null);
+        Task AddAsync(T entity);
+        Task UpdateAsync(T entity);
+        Task DeleteAsync(T entity);
     }
 }

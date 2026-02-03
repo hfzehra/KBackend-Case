@@ -1,4 +1,4 @@
-﻿using Core.Utilities.Results;
+﻿﻿using Core.Utilities.Results;
 using Entity.Concrete;
 using System;
 using System.Collections.Generic;
@@ -16,5 +16,11 @@ namespace Business.Abstract
         IResult Delete(int id);
         IResult Update(Product product);
 
+        // Async methods
+        Task<IDataResult<List<Product>>> GetAllAsync();
+        Task<IDataResult<Product>> GetByIdProductAsync(int id);
+        Task<IResult> AddAsync(Product product);
+        Task<IResult> DeleteAsync(int id);
+        Task<IResult> UpdateAsync(Product product);
     }
 }
