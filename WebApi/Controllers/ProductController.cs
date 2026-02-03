@@ -9,7 +9,7 @@ namespace WebApi.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        IProductService _productService;
+        private readonly IProductService _productService;
 
         public ProductController(IProductService productService)
         {
@@ -17,9 +17,9 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("getall")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = _productService.GetAll();
+            var result = await _productService.GetAllAsync();
             if (result.Success)
             {
                 return Ok(result);
@@ -28,9 +28,9 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("getbyid")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var result = _productService.GetByIdProduct(id);
+            var result = await _productService.GetByIdProductAsync(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -39,9 +39,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult Add(Product product)
+        public async Task<IActionResult> Add(Product product)
         {
-            var result = _productService.Add(product);
+            var result = await _productService.AddAsync(product);
             if (result.Success)
             {
                 return Ok(result);
@@ -50,14 +50,14 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("update")]
-        public IActionResult Update([FromBody]Product product)
+        public async Task<IActionResult> Update([FromBody] Product product)
         {
             if (product == null || product.Id <= 0)
             {
                 return BadRequest("Geçersiz ürün verisi");
             }
 
-            var result = _productService.Update(product);
+            var result = await _productService.UpdateAsync(product);
             if (result.Success)
             {
                 return Ok(result);
@@ -66,9 +66,9 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = _productService.Delete(id);
+            var result = await _productService.DeleteAsync(id);
             if (result.Success)
             {
                 return Ok(result);
