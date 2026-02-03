@@ -1,4 +1,4 @@
-﻿﻿using Business.Abstract;
+﻿using Business.Abstract;
 using Entity.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +17,9 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("getall")]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
-            var result = await _productService.GetAllAsync();
+            var result = _productService.GetAll();
             if (result.Success)
             {
                 return Ok(result);
@@ -28,9 +28,9 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("getbyid")]
-        public async Task<IActionResult> Get(int id)
+        public IActionResult Get(int id)
         {
-            var result = await _productService.GetByIdProductAsync(id);
+            var result = _productService.GetByIdProduct(id);
             if (result.Success)
             {
                 return Ok(result);
@@ -39,9 +39,9 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> Add(Product product)
+        public IActionResult Add(Product product)
         {
-            var result = await _productService.AddAsync(product);
+            var result = _productService.Add(product);
             if (result.Success)
             {
                 return Ok(result);
@@ -50,14 +50,14 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody]Product product)
+        public IActionResult Update([FromBody]Product product)
         {
             if (product == null || product.Id <= 0)
             {
                 return BadRequest("Geçersiz ürün verisi");
             }
 
-            var result = await _productService.UpdateAsync(product);
+            var result = _productService.Update(product);
             if (result.Success)
             {
                 return Ok(result);
@@ -66,9 +66,9 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
-            var result = await _productService.DeleteAsync(id);
+            var result = _productService.Delete(id);
             if (result.Success)
             {
                 return Ok(result);
