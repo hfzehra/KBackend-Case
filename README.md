@@ -67,6 +67,9 @@ Database (EF Core)
   - Single Responsibility  
   - Dependency Injection
 - **Asenkron programlama** (`async / await`)
+  - Tüm Controller action'ları async olarak çalışır
+  - Service katmanında async metotlar kullanılır
+  - Repository katmanında EF Core async metotları (`ToListAsync`, `SingleOrDefaultAsync`, `SaveChangesAsync`) kullanılır
 - **EF Core Migration yönetimi**
   ```bash
   dotnet ef migrations add InitialCreate
