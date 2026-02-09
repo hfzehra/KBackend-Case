@@ -1,6 +1,7 @@
 
 using Business.Abstract;
 using Business.Concrete;
+using Core.Utilities.Middleware;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntitiyFramework;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -31,13 +32,16 @@ namespace WebApi
             {
                 options.AddPolicy("AllowSpecificOrigins", policy =>
                 {
-                    policy.WithOrigins("http://localhost:5002") // Ýzin verilen origin
+                    policy.WithOrigins("http://localhost:5002") // ï¿½zin verilen origin
                             .AllowAnyMethod()
                             .AllowAnyHeader();
                 });
             });
 
             var app = builder.Build();
+
+            // Global Exception Handler Middleware
+            app.UseGlobalExceptionHandler();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -46,7 +50,7 @@ namespace WebApi
                 app.UseSwaggerUI();
             }
 
-            // CORS policy tanýmla
+            // CORS policy tanï¿½mla
           
 
             // CORS policy kullan
